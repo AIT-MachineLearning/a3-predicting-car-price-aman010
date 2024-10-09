@@ -1,0 +1,5 @@
+The updated version uses logistic regression, with the old prediction.
+Along side the notebooks are logged to mlflow server
+In this version adding multiple values to table give prediction on popup window rather than on secondary table.
+
+after adding the input to the table please click on the upper right button on the screen and the output will appear as a pop window
