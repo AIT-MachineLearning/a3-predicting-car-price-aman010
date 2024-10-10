@@ -86,4 +86,3 @@ jobs:
             tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml up -d
             
             
-###agsygaLKJ
