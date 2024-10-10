@@ -216,13 +216,22 @@ def process_form(n_clicks, *values):
               preventDefault=True,prevent_initial_call=True)
 #*[dash.dependencies.State(col, 'value') for col in df.columns])
 
-def table_processing(data,temp,n_clicks, n_clicks2, *em):
+def table_processing(data,temp,n_clicks, n_clicks2, *em, testing=False):
+    # if testing == True:
+    #     data = data.values
+    #     data =tuple(map(tuple, data)[0])
+    #     print(data)
+        
     if np.array(data).any():
         print("processing data")
         print(data)
         if temp is None:
             #ccheck the data is not null before adding to the store
-            df_ = pd.DataFrame(dict(zip(cols , data)),index=(len(data),))
+            if testing == True:
+                index =np.array(data).reshape(-1,1).T.shape[0]
+                df_ = pd.DataFrame(dict(zip(cols , data)),index= index)
+            else:
+                df_ = pd.DataFrame(dict(zip(cols , data)),index=(len(data),))
             #update the opt store with current value
             temp =[]
             temp.append(data)
@@ -230,7 +239,12 @@ def table_processing(data,temp,n_clicks, n_clicks2, *em):
             temp.append(data)
             index = list(range(np.array(temp).shape[0])) 
             # index = list(range(n_clicks))
-            df_ = pd.DataFrame(dict(zip(cols, np.array(temp).T)), index = index)
+            if testing == True:
+                # index = list(range(np.array(temp).shape[0])) 
+                # df_ = pd.DataFrame(dict(zip(cols, np.array(temp).T)), index = index)
+                df_=pd.DataFrame.from_records(np.array(temp)[0], columns = cols)
+            else:
+                df_ = pd.DataFrame(dict(zip(cols, np.array(temp).T)), index = index)
             
         ctx = dash.callback_context       
         
@@ -238,7 +252,7 @@ def table_processing(data,temp,n_clicks, n_clicks2, *em):
         
         fig = go.Figure(data=[go.Table(header=dict(values=list(cols)))])
         figz = None
-        
+    
         notify = None
         
         #if np.array(em).any() == None:
@@ -255,7 +269,12 @@ def table_processing(data,temp,n_clicks, n_clicks2, *em):
                 #again chedk for each variable 
                 #if np.array(notify).any() == None:
                 # em=np.array(em)
-                max_ = max_models[data[0]]
+                if testing == True:
+                    max_ = df_['year'].loc[0]
+                else:
+                    max_ = max_models[data[0]]
+
+                
                 #max_ = temp[len(temp)-1][0]
                 
                 # table = fig.data[0]
@@ -323,43 +342,55 @@ def table_processing(data,temp,n_clicks, n_clicks2, *em):
                 index = list(range(np.array(temp).shape[0]))
                 print('index in clean', index)
                 print("cleaning process")
-                clean = clean_data(x_train_data=df[cols],data = np.array(temp))
-                
+                if testing == True:
+                   clean = clean_data(x_train_data=df[cols],data = df_, testing=True)
+                else:
+                    clean = clean_data(x_train_data=df[cols],data = np.array(temp), testing=False)
                 p = clean._clean()
                 if p is None:
                     print('Not enough data')
                 print('the cleaned data', p)
                 print('performing predictions')
-                pred, blend, prob = clean.perfom_prediction(p)
-                print('res of pred', (pred, blend))
                 l = ['prediction', 'blended prediction']
+                if testing == False:
+                    pred, blend, prob = clean.perfom_prediction(p)
+                    print('res of pred', (pred, blend))
+                    if pred.shape[0] >= 1:
+                        print(pred.shape)
+                        if pred.shape[0] == 1:
+                            opt = "LinearRegression:{} , blend: {}, LogisticRegression:{}".format(pred[0], blend[0], prob[0])
+                        else:
+                            print("here to")
+                            opt = []
+                            for i in range(pred.shape[0]):
+                                opt.append("LinearRegression {}:{}, blend {}:{}, LogisticRegression {}:{}".format(i, pred[i], i, blend[i], i, prob[i]))
+                            ' '.join(opt)
+                                
+                        up_f = np.repeat(np.NAN, cols.shape[0])
+                        temp = []
+                        return fig, temp, *up_f,*em,True,opt
+
+
+                    else:
+                        opt = ""
+                        up_f = np.repeat(np.NAN, cols.shape[0])
+                        temp = []
+                        return fig, temp, *up_f,*em,True,opt
+                else:
+                    pred, prob = clean.perfom_prediction(p)
+                    return pred, prob
+
+                
                 
                 # fig2 = go.Figure(data=[go.Table(header=dict(values=l),
                 #                        cells=dict(values=np.array([pred[0],blend[0]]).T))
                 #                        ])
                 
                 # table = fig2.data[0]
-                if pred.shape[0] >= 1:
-                    print(pred.shape)
-                    if pred.shape[0] == 1:
-                        opt = "LinearRegression:{} , blend: {}, LogisticRegression:{}".format(pred[0], blend[0], prob[0])
-                    else:
-                        print("here to")
-                        opt = []
-                        for i in range(pred.shape[0]):
-                            opt.append("LinearRegression {}:{}, blend {}:{}, LogisticRegression {}:{}".format(i, pred[i], i, blend[i], i, prob[i]))
-                        ' '.join(opt)
-                            
-                    up_f = np.repeat(np.NAN, cols.shape[0])
-                    temp = []
-                    return fig, temp, *up_f,*em,True,opt
-
-
-                else:
-                    opt = ""
-                    up_f = np.repeat(np.NAN, cols.shape[0])
-                    temp = []
-                    return fig, temp, *up_f,*em,True,opt
+                
+                
+                
+                
 
 
                     
@@ -378,8 +409,8 @@ def table_processing(data,temp,n_clicks, n_clicks2, *em):
                 # print('before returning' ,Output_values.values()) 
                 
                 
-                up_f = np.repeat(np.NAN, cols.shape[0])
-                return fig, temp, *up_f,*em,True,opt
+            up_f = np.repeat(np.NAN, cols.shape[0])
+            return fig, temp, *up_f,*em,True,opt
     else:
        raise dash.exceptions.PreventUpdate()
        

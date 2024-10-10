@@ -15,19 +15,22 @@ import predictions
 
 
 class clean_data():
-    def __init__(self, x_train_data, data):
+    def __init__(self, x_train_data, data, testing):
         self.x = x_train_data
         self.data = data     
+        self.testing = testing
         
     def _clean(self):
         print('preprocessing')
-        self.data = pd.DataFrame.from_records(data = self.data)
-        col_shape = self.data.shape[1]
-        n=(col_shape - self.x.shape[1]) 
-        c = np.arange(n+1, col_shape)
-        #self.data.drop(columns = {c}, inplace = True)
-        self.data =np.delete(self.data, c, 1)
-        self.data = pd.DataFrame(self.data[:,:-1], columns = self.x.columns)
+        if self.testing == False:
+            self.data = pd.DataFrame.from_records(data = self.data)
+
+            col_shape = self.data.shape[1]
+            n=(col_shape - self.x.shape[1]) 
+            c = np.arange(n+1, col_shape)
+            #self.data.drop(columns = {c}, inplace = True)
+            self.data =np.delete(self.data, c, 1)
+            self.data = pd.DataFrame(self.data[:,:-1], columns = self.x.columns)
         #replacing null/none with nana
         self.data.fillna(np.NAN, inplace=True)
         #if all the rows are null drop 
@@ -40,16 +43,20 @@ class clean_data():
     
         self.re = self.imputation_d(self.data)
         self.re['year']=self.re['year'].astype('int')
-        
+            
         # general practice but in this case it does not matter.
         self.raw = pd.read_csv('data/Cars.csv')        
         x_pr = pd.read_csv('requires/train.csv')
         #x_pr['owner'].loc[x_pr[(x_pr['owner'] == 'Fourth & Above Owner') | (x_pr['owner'] == 'Third Owner')].index] = 'others'
-
         
-        re_ = self.features(x=self.re[:-1], x_pr = x_pr, encoding ='ordinal')
-        self.re_lr = self.features(x=self.re[:-1], x_pr=x_pr, encoding='one_hot')
-        
+        print(self.re.dtypes)        
+        if self.testing == False:
+            re_ = self.features(x=self.re[:-1], x_pr = x_pr, encoding ='ordinal')
+            self.re_lr = self.features(x=self.re[:-1], x_pr=x_pr, encoding='one_hot')
+        else:
+            re_ = self.features(x=self.re, x_pr = x_pr, encoding ='ordinal')
+            self.re_lr = self.features(x=self.re, x_pr=x_pr, encoding='one_hot')
+    
     
         
     
@@ -104,10 +111,9 @@ class clean_data():
                     
         
         
-    def features(self,x, x_pr, phase='Traning', encoding='ordinal'):
+    def features(self, x, x_pr, phase='Traning', encoding='ordinal'):
    #     x['co_cc']=x.groupby(['company'])['year'].transform(lambda x: sum(x-x.min())).astype('float')
             
-       
         gprs = x_pr.groupby(['company', 'year'])
         l = [(c,int(y)) for c in x['company'] for y in x[x['company'] == c]['year']]
         # print('LLLLLLLLLLLLLLLLLLLLLLLL',l)
@@ -140,9 +146,14 @@ class clean_data():
             u =self.raw['transmission'].value_counts()
             print('trying to impute',  u.index[u.argmax()])
             x['transmission'].loc[idx] = u.index[u.argmax()]
+            
+        print("asfter transfromation", x)
         
-        x['transmission'] = pd.Series(t.transform(x['transmission'].values.reshape(-1,1)).astype('int').flatten())
-   
+        if self.testing == False:
+            x['transmission'] = pd.Series(t.transform(x['transmission'].values.reshape(-1,1)).astype('int').flatten())
+        else:
+            x['transmission_label'] = t.transform(x['transmission'].values.reshape(-1,1)).flatten()
+
     
    
         idx = x[x['fuel'].isna()].index
@@ -250,9 +261,9 @@ class clean_data():
         #drop all the columns
         # data.to_csv('requires/data.csv')
     
-    
         drop_columns = ['engine','seats','owner',
                 'index', 'fuel', 'transmission', 'km_driven', 'seller_type', 'company']
+            
         data.drop(columns = drop_columns, inplace=True)
 
         
@@ -267,14 +278,18 @@ class clean_data():
         preds = o.predict()
         preds=scaler.inverse_transform(o.predict().reshape(-1, 1))
         x_pr = pd.read_csv('requires/train.csv')
-        p1,p2 = o.predict_blended_lm(0.25, scaler = scaler2, pred_=preds[0], x_d = self.re, td = x_pr , clean_data=self.features, old_model=True, lm=True)
-        p1= scaler.inverse_transform(p1.reshape(-1,1))
-        p2 = scaler.inverse_transform(p2.reshape(-1,1))
+        if self.testing == False:
+            p1,p2 = o.predict_blended_lm(0.25, scaler = scaler2, pred_=preds[0], x_d = self.re, td = x_pr , clean_data=self.features, old_model=True, lm=True)
+            p1= scaler.inverse_transform(p1.reshape(-1,1))
+            p2 = scaler.inverse_transform(p2.reshape(-1,1))
+            print(p1)
+            
         #firstowner', 'others'
         p3 = o.predict_logit(self.re_lr)
                                          
         print(preds)
-        print(p1)
         print("Making logit", p3)
-        
-        return np.array(preds, dtype = 'int').ravel(),np.array(p1+0.4*p2, dtype ='int').ravel()[:-1], p3
+        if self.testing == False:
+            return np.array(preds, dtype = 'int').ravel(),np.array(p1+0.4*p2, dtype ='int').ravel()[:-1], p3
+        else:
+            return np.array(preds, dtype = 'int').ravel(), p3
