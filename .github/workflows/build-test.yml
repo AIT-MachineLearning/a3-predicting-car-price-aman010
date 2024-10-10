@@ -30,7 +30,7 @@ jobs:
       #    fail_on_empty: true
       #    sort_keys: true
       - name: Build the Docker image
-        #run: docker compose build
+        run: docker compose build
         run:  docker build -t app .
       - name: Compose up
         run: docker compose up -d
@@ -85,5 +85,4 @@ jobs:
             tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml down
             tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml up -d
     
-#abcd
             
