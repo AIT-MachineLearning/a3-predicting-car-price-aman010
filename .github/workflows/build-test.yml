@@ -11,15 +11,14 @@ on:
 # There can be multiple jobs
 jobs:
   # Job name
-  build-and-test:
+  build-test:
     # Target machine that this job will run on.
     # ubuntu-latest or ubuntu-22.04 is the same image (as is August 2023)
     runs-on: ubuntu-latest
     # Tasks, specify in list.
     steps:
       # https://github.com/actions/checkout: will clone Git into the image
-      - name: Checout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       # Execute terminal command.
       #- name: Make envfile
       #  uses: SpicyPizza/create-envfile@v2.0
