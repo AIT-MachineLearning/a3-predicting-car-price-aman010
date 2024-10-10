@@ -7,7 +7,7 @@ run-name: ${{ github.actor }} Building and Testing
 on:
   push:
     braches:
-      - 'main'
+      - main
 # There can be multiple jobs
 jobs:
   # Job name
