@@ -12,7 +12,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Build the Docker image
-        run: docker build -t app .
+        run: docker build -t dash .
       - name: Start Docker Compose
         run: |
           docker compose up dash -d
