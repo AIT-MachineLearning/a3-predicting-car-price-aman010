@@ -10,10 +10,9 @@ on:
       - main
 # There can be multiple jobs
 jobs:
-  #Job name
+#Jobname
   build-test:
     #Target machine that this job will run on.
-    #ubuntu-latest or ubuntu-22.04 is the same image (as is August 2023)
     runs-on: ubuntu-latest
     # Tasks, specify in list.
     steps:
