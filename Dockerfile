@@ -13,7 +13,7 @@ COPY ./app/ /usr/src/app
 
 COPY app/* /app/
 
-EXPOSE 8080
+EXPOSE 8089
 
 
 # Changing to non-root user
