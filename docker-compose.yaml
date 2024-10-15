@@ -10,8 +10,8 @@ services:
     platform: linux/x86_64
     # This will ask DASH to run on 0.0.0.0 and port 80
     build:
-        context: ./
-        Dockerfile: Dockerfile
+        context: .
+        Dockerfile: .Dockerfile
     port:
     	- 8089:80
     env_file:
