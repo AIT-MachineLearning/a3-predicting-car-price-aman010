@@ -8,23 +8,20 @@ services:
     platform: linux/x86_64
     # This will ask DASH to run on 0.0.0.0 and port 80
     environment:
-      HOST=0.0.0.0
-      PORT=8089
-    #This is important for Traefik asking to use your container.
+      HOST: 0.0.0.0
+      PORT: 8089
+    # This is important for Traefik asking to use your container.
     labels:
-      # Allow Traefik to talk with your service
-      -traefik.enable=true
-      -traefik.http.services.dash_app-app.loadbalancer.server.port=80
-  
-      - traefik.http.routers.dash_app-app.rule=Host(`quantz.ml.brain.cs.ait.ac.th`)
-
-      -traefik.http.routers.dash_app-app.tls=true
-      -traefik.http.routers.dash_app-app.tls.certresolver=production
-      -traefik.http.routers.dash-app-app.entrypoints=websecure
-    # This define network. You would need to keep it like this.
+      traefik.enable: "true"
+      traefik.http.services.dash_app-app.loadbalancer.server.port: "80"
+      traefik.http.routers.dash_app-app.rule: Host(`quantz.ml.brain.cs.ait.ac.th`)
+      traefik.http.routers.dash_app-app.tls: "true"
+      traefik.http.routers.dash_app-app.tls.certresolver: "production"
+      traefik.http.routers.dash-app-app.entrypoints: "websecure"
+    # This defines networks. You would need to keep it like this.
     networks:
-      -default
-      -traefik_default
+      - default
+      - traefik_default
 
 # Keep it like this too.
 networks:
