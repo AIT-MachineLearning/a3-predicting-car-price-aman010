@@ -12,10 +12,11 @@ services:
     build:
         context: .
         Dockerfile: .Dockerfile
-    ports:
-    	- 8089:80
+    
+    ports: 
+       - 8089:80
     env_file:
-    	- .env
+        - .env
 
 # Keep it like this too.
 networks:
