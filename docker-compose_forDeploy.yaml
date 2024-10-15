@@ -12,7 +12,7 @@ services:
     environment:
       -HOST=0.0.0.0
       -PORT=8089
-    # This is important for Traefik asking to use your container.
+    #This is important for Traefik asking to use your container.
     labels:
       # Allow Traefik to talk with your service
       -traefik.enable=true
