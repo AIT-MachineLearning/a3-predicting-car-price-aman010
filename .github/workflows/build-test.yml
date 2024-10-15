@@ -6,7 +6,7 @@ run-name: ${{ github.actor }} Building and Testing
 # This tag will be used next when we build and push the image to dockerhub
 on:
   push:
-    braches:
+    branches:
       - main
 jobs:
   build-test:
