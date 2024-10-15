@@ -24,7 +24,7 @@ from clean_data import clean_data
 
 
 flask_app = flask.Flask(__name__)
-dash_app = Dash(__name__, server = flask_app, external_stylesheets=[dbc.themes.BOOTSTRAP], use_pages=False,suppress_callback_exceptions=True)
+dash = Dash(__name__, server = flask_app, external_stylesheets=[dbc.themes.BOOTSTRAP], use_pages=False,suppress_callback_exceptions=True)
 df = pd.read_csv('data/Cars.csv')
 
 df['mileage']=df['mileage'].apply(lambda x : str(x).split()[0]).astype('float')
@@ -50,7 +50,7 @@ cols = df.columns
 global _table 
 
 
-dash_app.layout = html.Div(
+dash.layout = html.Div(
     [
         # main app framework
         html.Div("Chakis Car Company", style={'fontSize':50, 'textAlign':'center'}),
@@ -162,7 +162,7 @@ dash_app.layout = html.Div(
     ])
 
 #@app.callback(Output("output", 'children'),[Input("submit button", 'values')],
-@dash_app.callback(
+@dash.callback(
     Output('opt', 'data'),
     *[Output('init'+col, 'children') for col in cols],
     *[dash.dependencies.Output('em'+col, 'children') for col in cols],
@@ -206,7 +206,7 @@ def process_form(n_clicks, *values):
         return values,*em, *np.repeat(None, cols.shape[0])
 
  #prevent_initial_call=True,)
-@dash_app.callback([Output('gr', 'figure')],
+@dash.callback([Output('gr', 'figure')],
                Output('temp', 'data'),*[Output(col , 'value') for col in cols],
                *[dash.dependencies.Output('notify'+col, 'children') for col in cols],
                [Output("pred_opt", "is_open"),Output("modal-content", "children")],
@@ -415,7 +415,7 @@ def table_processing(data,temp,n_clicks, n_clicks2, *em, testing=False):
        raise dash.exceptions.PreventUpdate()
        
        
-@dash_app.callback(
+@dash.callback(
     Output("popup-modal", "is_open"),
     [Input("close-button", "n_clicks")],
     [State("popup-modal", "is_open")],
@@ -458,4 +458,4 @@ def toggle_modal(n_clicks, is_open):
 
 
 if __name__ == "__main__":
-    dash_app.run_server(debug=False, host='0.0.0.0',port=8089)
+    dash.run_server(debug=False, host='0.0.0.0',port=8089)
