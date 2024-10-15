@@ -5,7 +5,7 @@ services:
     # This is for that asking the container to execute the main.py
     command: python3 main.py
     # The image I upload to my docker hub
-    image: st125490/dash_app:v1
+    image: st125490/ml_logit_3:v2
     # For MAC M1 user
     platform: linux/x86_64
     # This will ask DASH to run on 0.0.0.0 and port 80
@@ -39,4 +39,3 @@ networks:
     external: true
     
     
-#k
