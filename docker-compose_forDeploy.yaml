@@ -13,7 +13,7 @@ services:
     # This is important for Traefik asking to use your container.
     labels:
       traefik.enable: "true"
-      traefik.http.services.dash_app-app.loadbalancer.server.port: "80"
+      traefik.http.services.dash_app-app.loadbalancer.server.port: "8089"
       traefik.http.routers.dash_app-app.rule: Host(`ensembler.ml.brain.cs.ait.ac.th`)
       traefik.http.routers.dash_app-app.tls: "true"
       traefik.http.routers.dash_app-app.tls.certresolver: "production"
