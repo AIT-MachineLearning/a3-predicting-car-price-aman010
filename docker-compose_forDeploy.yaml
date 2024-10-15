@@ -35,3 +35,6 @@ networks:
   default:
   traefik_default:
     external: true
+    
+    
+#k
