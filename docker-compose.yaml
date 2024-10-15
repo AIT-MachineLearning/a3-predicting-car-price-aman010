@@ -12,7 +12,7 @@ services:
     build:
         context: .
         Dockerfile: .Dockerfile
-    port:
+    ports:
     	- 8089:80
     env_file:
     	- .env
