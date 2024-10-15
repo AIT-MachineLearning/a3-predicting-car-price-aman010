@@ -8,57 +8,34 @@ on:
   push:
     braches:
       - main
-# There can be multiple jobs
 jobs:
-#Jobname
   build-test:
-    #Target machine that this job will run on.
     runs-on: ubuntu-latest
-    # Tasks, specify in list.
     steps:
-      #https://github.com/actions/checkout: will clone Git into the image
       - uses: actions/checkout@v4
-      #Execute terminal command.
-      #- name: Make envfile
-      #  uses: SpicyPizza/create-envfile@v2.0
-      #  with:
-      #    envkey_MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-      #    envkey_APP_MODEL_NAME: ${{ secrets.APP_MODEL_NAME }}
-      #    file_name: .env
-      #    fail_on_empty: true
-      #    sort_keys: true
       - name: Build the Docker image
         run: docker build -t app .
       - name: Compose up
         run: docker compose up -d
-      # Execute pytest
       - name: Testing
         run: docker compose exec -it dash pytest 
-      # If the testing pass, upload the image
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME}}
           password: ${{ secrets.DOCKERHUB_ST125490}}
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
-          # Your image name
-          #images: akraradets/ait-ml-dash
           images: st125490/ml_logit_3
-          #tags: type=semver,pattern={{raw}}
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: .Dockerfile
           push: true
-          #tags: ${{ steps.meta.outputs.tags }}
   deploy:
-    #environment: Production
     needs: build-test
     runs-on: ubuntu-latest
     steps:
@@ -82,7 +59,4 @@ jobs:
             tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml down
             tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml up -d   
             
-            
-            
-            
-#kjhkjhjh         
+                  
