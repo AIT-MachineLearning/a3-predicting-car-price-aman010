@@ -12,13 +12,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Build the Docker image
-        run: docker build -t dash .
+        run: docker build -t dash_app .
       - name: Start Docker Compose
         run: |
-          docker compose up dash -d
+          docker compose up dash_app -d
           docker compose ps  # Check the status of the services
       - name: Testing
-        run: docker compose exec -it dash pytest
+        run: docker compose exec -it dash_app pytest
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -56,8 +56,8 @@ jobs:
           script: |
             echo "Running commands on the remote server..."
             docker pull st125490/ml_logit_3:v2 &&
-            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml down &&
+            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml down dash_app &&
             cd /home/st125490
-            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml up -d
+            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml up dash_app -d
             
 
