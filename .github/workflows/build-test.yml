@@ -15,9 +15,8 @@ jobs:
         run: docker build -t app .
       - name: Start Docker Compose
         run: |
-          docker compose up -d
+          docker compose up dash -d
           docker compose ps  # Check the status of the services
-          docker compose up dash
       - name: Testing
         run: docker compose exec -it dash pytest
       - name: Login to Docker Hub
