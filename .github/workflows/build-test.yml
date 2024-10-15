@@ -15,10 +15,10 @@ jobs:
         run: docker build -t dash_app .
       - name: Start Docker Compose
         run: |
-          docker compose up dash_app -d
+          docker compose up dash -d
           docker compose ps  # Check the status of the services
       - name: Testing
-        run: docker compose exec -it dash_app pytest
+        run: docker compose exec -it dash pytest
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -56,8 +56,8 @@ jobs:
           script: |
             echo "Running commands on the remote server..."
             docker pull st125490/ml_logit_3:v2 &&
-            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml down dash_app &&
+            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml down &&
             cd /home/st125490
-            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml up dash_app -d
+            tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml up -d
             
 
