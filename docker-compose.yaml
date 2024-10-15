@@ -3,7 +3,7 @@ version: '3.9'
 services:
   dash:
     # This is for that asking the container to execute the main.py
-    command: python3 main.py
+    command: python3 app.py
     # The image I upload to my docker hub
     image: st125490/dash_app:v2
     # For MAC M1 user
