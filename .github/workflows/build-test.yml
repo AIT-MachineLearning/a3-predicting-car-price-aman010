@@ -1,9 +1,5 @@
 name: Build-Test
-# Name of this run
 run-name: ${{ github.actor }} Building and Testing
-# When this action will be trigger
-# I want to do this when we push new change with tag.
-# This tag will be used next when we build and push the image to dockerhub
 on:
   push:
     branches:
@@ -13,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: buildtheDockerimage
+      - name: Build the Docker image
         run: docker build -t app .
       - name: Compose up
         run: docker compose up -d
@@ -22,8 +18,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME}}
-          password: ${{ secrets.DOCKERHUB_ST125490}}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -45,18 +41,14 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          passphrase: ${{ secrets.PASSPHRASE}}
-        
+          passphrase: ${{ secrets.PASSPHRASE }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           proxy_host: ${{ secrets.PROXY_HOST }}
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
           proxy_passphrase: ${{ secrets.PASSPHRASE }}
-          proxy_key: ${{secrets.SSH_PRIVATE_KEY}}
-          
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull st125490/ml_logit_3_:latest
-            tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml down
-            tag=${{ github.ref_name }} docker compose -f st125490/docker-compose.yaml up -d   
-            
-                  
+            docker pull st125490/ml_logit_3:latest &&
+            tag=${{ github.ref_name }} && docker compose -f st125490/docker-compose.yaml down &&
+            tag=${{ github.ref_name }} && docker compose -f st125490/docker-compose.yaml up -d
