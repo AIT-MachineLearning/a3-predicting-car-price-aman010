@@ -48,11 +48,11 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           passphrase: ${{ secrets.PASSPHRASE }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          proxy_host: ${{ secrets.PROXY_HOST }}
-          proxy_username: ${{ secrets.USERNAME }}
-          proxy_password: ${{ secrets.PASSWORD }}
-          proxy_passphrase: ${{ secrets.PASSPHRASE }}
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          #proxy_host: ${{ secrets.PROXY_HOST }}
+          #proxy_username: ${{ secrets.USERNAME }}
+          #proxy_password: ${{ secrets.PASSWORD }}
+          #proxy_passphrase: ${{ secrets.PASSPHRASE }}
+          #proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Running commands on the remote server..."
             docker pull st125490/ml_logit_3:latest &&
