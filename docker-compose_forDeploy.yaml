@@ -21,7 +21,7 @@ services:
       # This config you domain name. By default, your subdomain is <service_name>-<folder_name>
       # If you which to change the subdomain name, you uncomment the below configuration
       # - traefik.http.routers.<service_name>-<folder_name>.rule=Host(`<subdomain>.ml2023.cs.ait.ac.th`)
-      - traefik.http.routers.dash_app-app.rule=Host(`ensembler.ml.brain.cs.ait.ac.th`)
+      - traefik.http.routers.dash_app-app.rule=Host(`quantz.ml.brain.cs.ait.ac.th`)
 
       # Below is for enable SSL.
       -traefik.http.routers.dash_app-app.tls=true
