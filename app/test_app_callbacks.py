@@ -11,7 +11,7 @@ import numpy as np
 
 import dash
 from dash import html
-from app import dash_app
+# from app import dash
 from contextvars import copy_context
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
