@@ -35,7 +35,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: st125490/my_logit_3:v2
+          tags: st125490/ml_logit_3:v2
   deploy:
     needs: build-test
     runs-on: ubuntu-latest
