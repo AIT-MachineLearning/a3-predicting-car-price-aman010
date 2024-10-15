@@ -58,3 +58,5 @@ jobs:
             docker pull st125490/ml_logit_3:latest &&
             tag=${{ github.ref_name }} && docker compose -f st125490/docker-compose.yaml down &&
             tag=${{ github.ref_name }} && docker compose -f st125490/docker-compose.yaml up -d
+            
+#kjahskjasg
