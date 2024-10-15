@@ -59,3 +59,5 @@ jobs:
             tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml down &&
             cd /home/st125490
             tag=${{ github.ref_name }} && docker compose -f docker-compose.yaml up -d
+            
+   #kj
