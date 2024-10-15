@@ -11,7 +11,7 @@ services:
     # This will ask DASH to run on 0.0.0.0 and port 80
     build:
         context: .
-        Dockerfile: .Dockerfile
+        dockerfile: .Dockerfile
     
     ports: 
        - 8089:80
